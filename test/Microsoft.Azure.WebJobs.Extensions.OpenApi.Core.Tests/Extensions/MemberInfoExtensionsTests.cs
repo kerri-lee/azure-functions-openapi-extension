@@ -55,5 +55,19 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Extensions
 
             result.Should().Be(expected);
         }
+
+        [DataTestMethod]
+        [DataRow("StringValue1", "lorem")]
+        [DataRow("StringValue2", "ipsum")]
+        [DataRow("StringValue3", "dolor")]
+        [DataRow("StringValue4", "StringValue4")]
+        public void Given_MemberInfo_For_SystemTextJson_Enum_When_ToDisplayName_Invoked_Then_It_Should_Return_Result(string memberName, string expected)
+        {
+            var member = typeof(FakeStringEnumWithSystemJson).GetMember(memberName).First();
+
+            var result = MemberInfoExtensions.ToDisplayName(member);
+
+            result.Should().Be(expected);
+        }
     }
 }

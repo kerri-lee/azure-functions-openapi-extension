@@ -98,7 +98,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Extensions
         }
 
         [TestMethod]
-        public void Given_Value_With_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
+        public void Given_Value_With_Newtonsoft_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
         {
             var strategy = new CamelCaseNamingStrategy();
             var names = typeof(FakeStringEnum).ToOpenApiStringCollection(strategy).Select(p => (p as OpenApiString).Value).ToList();
@@ -123,13 +123,63 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Extensions
         }
 
         [TestMethod]
-        public void Given_Value_With_List_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
+        public void Given_Value_With_SystemTextJson_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
+        {
+            var strategy = new CamelCaseNamingStrategy();
+            var names = typeof(FakeStringEnumWithSystemJson).ToOpenApiStringCollection(strategy).Select(p => (p as OpenApiString).Value).ToList();
+            var attribute = new OpenApiParameterAttribute("hello")
+            {
+                Type = typeof(FakeStringEnumWithSystemJson),
+                Description = "hello world",
+                Required = true,
+                In = ParameterLocation.Query,
+            };
+
+            var result = OpenApiParameterAttributeExtensions.ToOpenApiParameter(attribute, strategy);
+
+            result.Style.Should().BeNull();
+            result.Explode.Should().Be(attribute.Explode);
+
+            result.Schema.Type.Should().Be("string");
+            result.Schema.Format.Should().BeNull();
+
+            result.Schema.Enum.Should().HaveCount(names.Count);
+            (result.Schema.Default as OpenApiString).Value.Should().Be(names.First());
+        }
+
+        [TestMethod]
+        public void Given_Value_With_List_Newtonsoft_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
         {
             var strategy = new CamelCaseNamingStrategy();
             var names = typeof(FakeStringEnum).ToOpenApiStringCollection(strategy).Select(p => (p as OpenApiString).Value).ToList();
             var attribute = new OpenApiParameterAttribute("hello")
             {
                 Type = typeof(List<FakeStringEnum>),
+                Description = "hello world",
+                Required = true,
+                In = ParameterLocation.Query,
+            };
+
+            var result = OpenApiParameterAttributeExtensions.ToOpenApiParameter(attribute, strategy);
+
+            result.Style.Should().Be(ParameterStyle.Form);
+            result.Explode.Should().Be(attribute.Explode);
+
+            result.Schema.Type.Should().Be("array");
+            result.Schema.Format.Should().BeNull();
+            result.Schema.Items.Type.Should().Be("string");
+            result.Schema.Items.Enum.Should().HaveCount(names.Count);
+            (result.Schema.Items.Default as OpenApiString).Value.Should().Be(names.First());
+        }
+
+        [TestMethod]
+        public void Given_Value_With_List_SystemTextJson_Enum_Type_When_ToOpenApiParameter_Invoked_Then_It_Should_Return_Result()
+        {
+            var strategy = new CamelCaseNamingStrategy();
+            var names = typeof(FakeStringEnumWithSystemJson).ToOpenApiStringCollection(strategy).Select(p => (p as OpenApiString).Value).ToList();
+            var attribute = new OpenApiParameterAttribute("hello")
+            {
+                Type = typeof(List<FakeStringEnumWithSystemJson>),
                 Description = "hello world",
                 Required = true,
                 In = ParameterLocation.Query,

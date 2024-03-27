@@ -34,6 +34,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Visitors
 
         [DataTestMethod]
         [DataRow(typeof(FakeStringEnum), false)]
+        [DataRow(typeof(FakeStringEnumWithSystemJson), false)]
         public void Given_Type_When_IsNavigatable_Invoked_Then_It_Should_Return_Result(Type type, bool expected)
         {
             var result = this._visitor.IsNavigatable(type);
@@ -43,6 +44,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Visitors
 
         [DataTestMethod]
         [DataRow(typeof(FakeStringEnum), true)]
+        [DataRow(typeof(FakeStringEnumWithSystemJson), true)]
         [DataRow(typeof(int), false)]
         public void Given_Type_When_IsVisitable_Invoked_Then_It_Should_Return_Result(Type type, bool expected)
         {
@@ -53,6 +55,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Visitors
 
         [DataTestMethod]
         [DataRow(typeof(FakeStringEnum), true)]
+        [DataRow(typeof(FakeStringEnumWithSystemJson), true)]
         [DataRow(typeof(int), false)]
         public void Given_Type_When_IsParameterVisitable_Invoked_Then_It_Should_Return_Result(Type type, bool expected)
         {
@@ -63,6 +66,7 @@ namespace Microsoft.Azure.WebJobs.Extensions.OpenApi.Core.Tests.Visitors
 
         [DataTestMethod]
         [DataRow(typeof(FakeStringEnum), true)]
+        [DataRow(typeof(FakeStringEnumWithSystemJson), true)]
         [DataRow(typeof(int), false)]
         public void Given_Type_When_IsPayloadVisitable_Invoked_Then_It_Should_Return_Result(Type type, bool expected)
         {
